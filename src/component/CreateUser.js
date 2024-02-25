@@ -4,15 +4,15 @@ import { FormattedMessage } from "react-intl";
 import { gql } from '@apollo/client';
 
 function CreateUserForm() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [birth_date, setBirthdate] = useState("");
   const [gender, setGender] = useState("");
 
   const GET_USERS = gql`
-  query GetUsers {
-    users {
+  query {
+    all_users {
       id
       first_name
       last_name
@@ -23,9 +23,21 @@ function CreateUserForm() {
   }
 `;
 
- const CREATE_USER = gql`
-  mutation CreateUser($input: CreateUserInput!) {
-    createUser(input: $input) {
+const CREATE_USER = gql`
+  mutation AddNewUser(
+    $first_name: String!,
+    $last_name: String!,
+    $email: String!,
+    $birth_date: String!,
+    $gender: String!
+  ) {
+    add_new_user(
+      first_name: $first_name,
+      last_name: $last_name,
+      email: $email,
+      birth_date: $birth_date,
+      gender: $gender
+    ) {
       id
       first_name
       last_name
@@ -36,7 +48,8 @@ function CreateUserForm() {
   }
 `;
 
-  const [createUser] = useMutation(CREATE_USER, {
+
+  const [add_new_user] = useMutation(CREATE_USER, {
     update(cache, { data: { createUser } }) {
       const { users } = cache.readQuery({ query: GET_USERS });
       cache.writeQuery({
@@ -47,24 +60,22 @@ function CreateUserForm() {
   });
 
   const handleCreateUser = () => {
-    createUser({
+    add_new_user({
       variables: {
-        input: {
-          firstName,
-          lastName,
-          email,
-          birth_date,
-          gender
-        },
-      },
+        first_name,
+        last_name,
+        email,
+        birth_date,
+        gender
+      }
     });
     setFirstName("");
     setLastName("");
     setEmail("");
     setBirthdate("");
-    setGender("")
+    setGender("");
   };
-
+  
   return (
     <div>
       <h2>
@@ -73,13 +84,13 @@ function CreateUserForm() {
       <input
         type="text"
         placeholder={<firstName id="firstName" />}
-        value={firstName}
+        value={first_name}
         onChange={(e) => setFirstName(e.target.value)}
       />
       <input
         type="text"
         placeholder={<lastName id="lastName" />}
-        value={lastName}
+        value={last_name}
         onChange={(e) => setLastName(e.target.value)}
       />
       <input

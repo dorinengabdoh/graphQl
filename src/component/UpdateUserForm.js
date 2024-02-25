@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { FormattedMessage } from 'react-intl';
-import { UPDATE_USER } from './queries';
+import React, { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { FormattedMessage } from "react-intl";
+import { UPDATE_USER } from "./queries";
 
-function UpdateUserForm(userData ) {
-  const user =userData
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName);
+function UpdateUserForm(userData) {
+  const user = userData;
+  const [first_name, setFirstName] = useState(user.firstName);
+  const [last_name, setLastName] = useState(user.lastName);
   const [email, setEmail] = useState(user.email);
   const [birth_date, setBirthdate] = useState(user.email);
   const [gender, setGender] = useState(user.email);
 
-
-  const [updateUser] = useMutation(UPDATE_USER);
+  const [editUser] = useMutation(UPDATE_USER);
 
   const handleUpdateUser = () => {
-    updateUser({
+    editUser({
       variables: {
         id: user.id,
         input: {
-          firstName,
-          lastName,
+          first_name,
+          last_name,
           email,
           birth_date,
-          gender
+          gender,
         },
       },
     });
@@ -36,32 +35,32 @@ function UpdateUserForm(userData ) {
       </h2>
       <input
         type="text"
-        placeholder={<FormattedMessage id="firstName" />}
-        value={firstName}
+        placeholder="First Name"
+        value={first_name}
         onChange={(e) => setFirstName(e.target.value)}
       />
       <input
         type="text"
-        placeholder={<FormattedMessage id="lastName" />}
-        value={lastName}
+        placeholder="Last Name"
+        value={last_name}
         onChange={(e) => setLastName(e.target.value)}
       />
       <input
         type="email"
-        placeholder={<FormattedMessage id="email" />}
+        placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-          <input
-        type="birth_date"
-        placeholder={<FormattedMessage id="birth_date" />}
+      <input
+        type="text"
+        placeholder="Birth Date"
         value={birth_date}
         onChange={(e) => setBirthdate(e.target.value)}
       />
-           <input
-        type="birth_date"
-        placeholder={<FormattedMessage id="birth_date" />}
-        value={birth_date}
+      <input
+        type="text"
+        placeholder="Gender"
+        value={gender}
         onChange={(e) => setGender(e.target.value)}
       />
       <button onClick={handleUpdateUser}>
