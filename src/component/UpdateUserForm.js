@@ -1,7 +1,20 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { FormattedMessage } from "react-intl";
-import { UPDATE_USER } from "./queries";
+import { gql } from '@apollo/client';
+
+
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
+    updateUser(id: $id, input: $input) {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+`;
 
 function UpdateUserForm(userData) {
   const user = userData;
@@ -10,7 +23,6 @@ function UpdateUserForm(userData) {
   const [email, setEmail] = useState(user.email);
   const [birth_date, setBirthdate] = useState(user.email);
   const [gender, setGender] = useState(user.email);
-
   const [editUser] = useMutation(UPDATE_USER);
 
   const handleUpdateUser = () => {
@@ -30,9 +42,6 @@ function UpdateUserForm(userData) {
 
   return (
     <div>
-      <h2>
-        <FormattedMessage id="updateUser" />
-      </h2>
       <input
         type="text"
         placeholder="First Name"
@@ -63,9 +72,6 @@ function UpdateUserForm(userData) {
         value={gender}
         onChange={(e) => setGender(e.target.value)}
       />
-      <button onClick={handleUpdateUser}>
-        <FormattedMessage id="update" />
-      </button>
     </div>
   );
 }

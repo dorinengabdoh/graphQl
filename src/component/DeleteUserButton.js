@@ -1,7 +1,16 @@
 import React from 'react';
 import { useMutation } from '@apollo/client';
 import { FormattedMessage } from 'react-intl';
-import { DELETE_USER, GET_USERS } from './queries';
+import { gql } from '@apollo/client';
+
+
+ const DELETE_USER = gql`
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      id
+    }
+  }
+`;
 
 function DeleteUserButton({ userId }) {
   const [deleteUser] = useMutation(DELETE_USER, {

@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { FormattedMessage } from "react-intl";
 import { gql } from '@apollo/client';
-
+import { MESSAGES_FR } from "../translation";
 function CreateUserForm() {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [birth_date, setBirthdate] = useState("");
   const [gender, setGender] = useState("");
-
   const GET_USERS = gql`
   query {
-    all_users {
+    users: all_users {
       id
       first_name
       last_name
@@ -22,7 +21,6 @@ function CreateUserForm() {
     }
   }
 `;
-
 const CREATE_USER = gql`
   mutation AddNewUser(
     $first_name: String!,
@@ -47,18 +45,15 @@ const CREATE_USER = gql`
     }
   }
 `;
-
-
   const [add_new_user] = useMutation(CREATE_USER, {
-    update(cache, { data: { createUser } }) {
+    update(cache, { data: { add_new_user  } }) {
       const { users } = cache.readQuery({ query: GET_USERS });
       cache.writeQuery({
         query: GET_USERS,
-        data: { users: users.concat([createUser]) },
+        data: { users: users.concat([add_new_user ]) },
       });
     },
   });
-
   const handleCreateUser = () => {
     add_new_user({
       variables: {
@@ -75,7 +70,6 @@ const CREATE_USER = gql`
     setBirthdate("");
     setGender("");
   };
-  
   return (
     <div>
       <h2>
@@ -83,31 +77,31 @@ const CREATE_USER = gql`
       </h2>
       <input
         type="text"
-        placeholder={<firstName id="firstName" />}
+        placeholder={MESSAGES_FR.firstName}
         value={first_name}
         onChange={(e) => setFirstName(e.target.value)}
       />
       <input
         type="text"
-        placeholder={<lastName id="lastName" />}
+        placeholder={MESSAGES_FR.lastName}
         value={last_name}
         onChange={(e) => setLastName(e.target.value)}
       />
       <input
         type="email"
-        placeholder={<FormattedMessage id="email" />}
+        placeholder={MESSAGES_FR.email}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
-        type="birth_date"
-        placeholder={<FormattedMessage id="date" />}
+        type="date"
+        placeholder={MESSAGES_FR.date}
         value={birth_date}
         onChange={(e) => setBirthdate(e.target.value)}
       />
       <input
-        type="gender"
-        placeholder={<FormattedMessage id="text" />}
+        type="text"
+        placeholder={MESSAGES_FR.gender}
         value={gender}
         onChange={(e) => setGender(e.target.value)}
       />
@@ -117,5 +111,9 @@ const CREATE_USER = gql`
     </div>
   );
 }
-
 export default CreateUserForm;
+
+
+
+
+
