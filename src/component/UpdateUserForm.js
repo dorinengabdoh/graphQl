@@ -3,7 +3,8 @@ import { useMutation } from '@apollo/client';
 import { FormattedMessage } from 'react-intl';
 import { UPDATE_USER } from './queries';
 
-function UpdateUserForm({ user }) {
+function UpdateUserForm(userData ) {
+  const user =userData
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [email, setEmail] = useState(user.email);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMutation } from '@apollo/client';
-// import { FormattedMessage } from 'react-intintl';
+import { FormattedMessage } from 'react-intl';
 import { DELETE_USER, GET_USERS } from './queries';
 
 function DeleteUserButton({ userId }) {
