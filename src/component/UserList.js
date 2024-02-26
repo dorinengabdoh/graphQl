@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { gql } from "@apollo/client";
 import "../App.css";
 import MESSAGES_FR from "../translation";
+import axios from "axios";
 
 const GET_USERS = gql`
   query {
@@ -18,24 +19,76 @@ const GET_USERS = gql`
   }
 `;
 
+export const DELETE_USER = gql`
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      id
+    }
+  }
+`;
+export const UPDATE_USER = gql`
+  mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
+    updateUser(id: $id, input: $input) {
+      id
+      firstName
+      lastName
+      email
+      birth_date
+      gender
+    }
+  }
+`;
+
 function UserList() {
   const { loading, error, data } = useQuery(GET_USERS);
   if (loading) return <FormattedMessage id="loading" />;
   if (error) return <FormattedMessage id="error" />;
   console.log(data);
 
-  const UpdateUser = () => {
-    const [value, setValue] = useState({
-      firstName: "",
-      lastName: "",
-      email: "",
-      birth_date: "",
-      gender: "",
-    });
+  const [editUser] = useMutation(UPDATE_USER, {
+    update(cache, { data: { editUser } }) {
+      const { users } = cache.readQuery({ query: GET_USERS });
+      cache.writeQuery({
+        query: GET_USERS,
+        data: { users: users.concat([editUser]) },
+      });
+    },
+  });
 
-    const handleUpdate =(event)=>{
-      event.preventDefault();
+  const handleUpdate = () => {
+    editUser({
+      variables: {
+        id: data.all_users.id,
+        first_name: data.all_users.firstName,
+        last_name: data.all_users.lastName,
+        email: data.all_users.email,
+        birth_date: data.all_users.birth_date,
+        gender: data.all_users.gender,
+      },
+    });
+    id;
+    first_name;
+    last_name;
+    email;
+    birth_date;
+    gender;
+  };
+
+  const handleDelete = () => {
+    const confirm = window.confirm("would you like to Delete??");
+    if (confirm) {
+      axios
+        .DELETE_USER("http://localhost:8000/graphql")
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
     }
+  };
+  const UpdateUser = () => {
+    const handleUpdate = (event) => {
+      event.preventDefault();
+    };
     return (
       <div className="d-flex w-100 vh-100 justify-content-center align-items-center gb-light">
         <div className="w-50 border bg-whiteshadow px-5 pt-3 pb-5 rounded">
@@ -141,11 +194,16 @@ function UserList() {
                 <td>
                   <button
                     className="btn btn-sm btn-primary m-2"
-                    onClick={UpdateUser}
+                    onClick={handleUpdate}
                   >
                     Edit
                   </button>
-                  <button className="btn btn-sm btn-danger m-2">Delete</button>
+                  <button
+                    onClick={handleDelete}
+                    className="btn btn-sm btn-danger m-2"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
